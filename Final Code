@@ -1,0 +1,39 @@
+# REFERENCES:
+# ("NeoPixel — BBC micro:bit MicroPython 1.0.1 documentation", 2020)
+# ("Gestures — BBC micro:bit MicroPython 1.0.1 documentation", 2020)
+
+from microbit import *
+import neopixel
+import random
+red1 = 255
+lightsdimming = 0
+
+
+# Setup the Neopixel strip on pin0 with a length of 30 pixels
+np = neopixel.NeoPixel(pin0, 30)
+
+colours = [
+    (24, 2, 48), # violet
+    (255, 0, 0), # red
+    (0, 255, 0), # green
+]
+
+while True:
+    if accelerometer.is_gesture('shake'):
+        for pixel_id in range(0, len(np)):
+            np[pixel_id] = random.choice(colours)
+            np.show()
+    elif accelerometer.is_gesture('face down'):
+        lightsdimming = 1
+    if lightsdimming == 1:
+        for pixel_id in range(0, len(np)):
+            np[pixel_id] = (red1, 0, 0)
+        np.show()
+        red1 -= 6
+        if red1 < 0:
+            red1 = 0
+            lightsdimming = 0
+            np.clear()
+    if accelerometer.is_gesture('face up'):
+        red1 = 255
+    sleep(100)
